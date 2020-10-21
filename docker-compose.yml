@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  nginx:
+    restart: always
+    container_name: nginx
+    hostname: nginx
+    image: danxiaonuo/nginx:latest
+    volumes:
+      - ./www:/www:rw,cached
+      - ./conf/ssl:/ssl:rw,cached
+      - ./conf/vhost:/data/nginx/conf/vhost:rw,cached
+      - ./conf/nginx.conf:/data/nginx/conf/nginx.conf:rw,cached
+      - ./conf/gzip.conf:/data/nginx/conf/gzip.conf:rw,cached
+      - ./conf/cache.conf:/data/nginx/conf/cache.conf:rw,cached
+      - ./conf/proxy.conf:/data/nginx/conf/proxy.conf:rw,cached
+      - ./conf/waf.conf:/data/nginx/conf/waf.conf:rw,cached
+      - ./conf/waf:/data/nginx/conf/waf:rw,cached
+      - ./logs:/data/nginx/logs:delegated
+      - /usr/share/zoneinfo:/usr/share/zoneinfo:ro,cached
+      - /etc/localtime:/etc/localtime:ro,cached
+    cap_add:
+     - ALL
+    sysctls:
+     - net.ipv4.tcp_ecn=1
+     - net.ipv4.tcp_ecn_fallback=1
+     - net.ipv4.tcp_congestion_control=bbrplus
+    ulimits:
+      nproc: 65535
+      nofile:
+          soft: 65535
+          hard: 65535
+    ports:
+    - "80:80"
+    - "443:443"
+    dns:
+    - 114.114.114.114
+    - 119.29.29.29
