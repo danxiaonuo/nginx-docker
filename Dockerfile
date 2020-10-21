@@ -412,6 +412,15 @@ COPY --from=builder /usr/local/lib /usr/local/lib
 COPY --from=builder /usr/local/share/lua /usr/local/share/lua
 COPY --from=builder /data /data
 
+# 拷贝配置文件
+ADD conf/nginx.conf /data/nginx/conf/nginx.conf
+ADD conf/gzip.conf /data/nginx/conf/gzip.conf
+ADD conf/cache.conf /data/nginx/conf/cache.conf
+ADD conf/proxy.conf /data/nginx/conf/proxy.conf
+ADD conf/waf.conf /data/nginx/conf/waf.conf
+ADD conf/waf /data/nginx/conf/waf
+ADD www /www
+
 # 安装相关依赖
 RUN set -eux \
 && apk add --no-cache --virtual .gettext gettext \
