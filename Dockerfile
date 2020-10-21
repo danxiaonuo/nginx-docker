@@ -419,6 +419,8 @@ ADD conf/cache.conf /data/nginx/conf/cache.conf
 ADD conf/proxy.conf /data/nginx/conf/proxy.conf
 ADD conf/waf.conf /data/nginx/conf/waf.conf
 ADD conf/waf /data/nginx/conf/waf
+ADD conf/ssl /data/nginx/conf/ssl
+ADD conf/vhost /data/nginx/conf/vhost
 ADD www /www
 
 # 安装相关依赖
