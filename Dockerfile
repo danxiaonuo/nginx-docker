@@ -4,9 +4,6 @@
 FROM alpine:latest AS base
 # 作者描述信息
 MAINTAINER danxiaonuo
-# 语言设置
-ARG LANG=en_US.UTF-8
-ENV LANG=$LANG
 # 时区设置
 ARG TZ=Asia/Shanghai
 ENV TZ=$TZ
@@ -239,13 +236,21 @@ ENV NGINX_BUILD_DEPS=$NGINX_BUILD_DEPS
 ####################################
 FROM base AS builder
 
+# 修改源地址
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+# ***** 安装相关依赖并更新系统软件 *****
 # ***** 安装依赖 *****
 RUN set -eux \
+   # 更新源地址
    && apk update \
-   && apk add --no-cache \
-      $BUILD_DEPS \
-      $NGINX_BUILD_DEPS
-
+   # 更新系统并更新系统软件
+   && apk upgrade && apk upgrade \
+   && apk add -U --update $BUILD_DEPS $NGINX_BUILD_DEPS \
+   # 更新时区
+   && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+   # 更新时间
+   && echo ${TZ} > /etc/timezone
+      
 # ##############################################################################
 # ***** 创建相关目录 *****
 RUN set -eux \
@@ -367,6 +372,29 @@ RUN set -eux \
 ##########################################
 FROM base
 
+ARG PKG_DEPS="\
+      tzdata \
+	  curl \
+	  ca-certificates \
+      geoip-dev \
+      openssl-dev \
+      pcre-dev \
+      zlib-dev"
+ENV PKG_DEPS=$PKG_DEPS
+
+# 修改源地址
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+# ***** 安装依赖 *****
+RUN set -eux \
+   # 更新源地址
+   && apk update \
+   # 更新系统并更新系统软件
+   && apk upgrade && apk upgrade \
+   && apk add -U --update $PKG_DEPS \
+   # 更新时区
+   && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+   # 更新时间
+   && echo ${TZ} > /etc/timezone
 
 # http://label-schema.org/rc1/
 LABEL maintainer="danxiaonuo <danxiaonuo@danxiaonuo.me>" \
@@ -400,12 +428,6 @@ LABEL maintainer="danxiaonuo <danxiaonuo@danxiaonuo.me>" \
       versions.os=${DOCKER_IMAGE_TAG} \
       versions.stream-lua-nginx-module=${OPENRESTY_STREAMLUA_VERSION}
 
-ARG PKG_DEPS="\
-      geoip-dev \
-      openssl-dev \
-      pcre-dev \
-      zlib-dev"
-ENV PKG_DEPS=$PKG_DEPS
 
 # 拷贝文件
 COPY --from=builder /usr/local/lib /usr/local/lib
@@ -413,19 +435,19 @@ COPY --from=builder /usr/local/share/lua /usr/local/share/lua
 COPY --from=builder /data /data
 
 # 拷贝配置文件
-ADD conf/nginx.conf /data/nginx/conf/nginx.conf
-ADD conf/gzip.conf /data/nginx/conf/gzip.conf
-ADD conf/cache.conf /data/nginx/conf/cache.conf
-ADD conf/proxy.conf /data/nginx/conf/proxy.conf
-ADD conf/waf.conf /data/nginx/conf/waf.conf
-ADD conf/waf /data/nginx/conf/waf
-ADD conf/ssl /data/nginx/conf/ssl
-ADD conf/vhost /data/nginx/conf/vhost
-ADD www /www
+COPY conf/nginx/nginx.conf /data/nginx/conf/nginx.conf
+COPY conf/nginx/gzip.conf /data/nginx/conf/gzip.conf
+COPY conf/nginx/cache.conf /data/nginx/conf/cache.conf
+COPY conf/nginx/proxy.conf /data/nginx/conf/proxy.conf
+COPY conf/nginx/waf.conf /data/nginx/conf/waf.conf
+COPY conf/nginx/waf /data/nginx/conf/waf
+COPY conf/nginx/ssl /data/nginx/conf/ssl
+COPY conf/nginx/vhost /data/nginx/conf/vhost
+COPY conf/nginx/www /www
 
 # 安装相关依赖
 RUN set -eux \
-&& apk add --no-cache --virtual .gettext gettext \
+&& apk add -U --update --virtual .gettext gettext \
     && mv /usr/bin/envsubst /tmp/ \
     \
     && runDeps="$( \
@@ -439,19 +461,12 @@ RUN set -eux \
     && apk del .gettext \
     && mv /tmp/envsubst /usr/local/bin/ 
 
-RUN set -eux \
-    && apk update \
-    && apk add --no-cache \
-    $PKG_DEPS \
-# 引入tzdata，这样用户就可以通过环境设置时区
-# variables
-    && apk add --no-cache tzdata \
-# 引入curl和ca证书，以便更容易在DNS SD上注册
-    && apk add --no-cache curl ca-certificates \
+
 # 将请求和错误日志转发到docker日志收集器
+RUN set -eux \
     && ln -sf /dev/stdout /data/nginx/logs/access.log \
     && ln -sf /dev/stderr /data/nginx/logs/error.log \
-# dumb-init
+# 安装dumb-init
 # ##############################################################################
     && curl -Lo /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMBINIT_VERSION}/dumb-init_${DUMBINIT_VERSION}_x86_64 \
     && chmod +x /usr/bin/dumb-init \
