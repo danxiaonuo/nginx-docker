@@ -8,7 +8,9 @@ services:
     hostname: nginx
     image: danxiaonuo/nginx:latest
     volumes:
+      # 数据目录
       - ./www:/www:rw,cached
+      # 配置目录与文件
       - ./conf/nginx/ssl:/ssl:rw,cached
       - ./conf/nginx/vhost:/data/nginx/conf/vhost:rw,cached
       - ./conf/nginx/nginx.conf:/data/nginx/conf/nginx.conf:rw,cached
@@ -17,6 +19,7 @@ services:
       - ./conf/nginx/proxy.conf:/data/nginx/conf/proxy.conf:rw,cached
       - ./conf/nginx/waf.conf:/data/nginx/conf/waf.conf:rw,cached
       - ./conf/nginx/waf:/data/nginx/conf/waf:rw,cached
+      # 日志目录
       - ./logs/nginx:/data/nginx/logs:delegated
       # 同步宿主机时区与时间
       - /usr/share/zoneinfo:/usr/share/zoneinfo:ro,cached

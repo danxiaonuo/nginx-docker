@@ -443,7 +443,7 @@ COPY conf/nginx/waf.conf /data/nginx/conf/waf.conf
 COPY conf/nginx/waf /data/nginx/conf/waf
 COPY conf/nginx/ssl /data/nginx/conf/ssl
 COPY conf/nginx/vhost /data/nginx/conf/vhost
-COPY conf/nginx/www /www
+COPY www /www
 
 # 安装相关依赖
 RUN set -eux \
