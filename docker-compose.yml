@@ -7,15 +7,15 @@ services:
     hostname: nginx
     image: danxiaonuo/nginx:latest
     volumes:
-      - ./www:/www:rw,cached
-      - ./conf/ssl:/ssl:rw,cached
-      - ./conf/vhost:/data/nginx/conf/vhost:rw,cached
-      - ./conf/nginx.conf:/data/nginx/conf/nginx.conf:rw,cached
-      - ./conf/gzip.conf:/data/nginx/conf/gzip.conf:rw,cached
-      - ./conf/cache.conf:/data/nginx/conf/cache.conf:rw,cached
-      - ./conf/proxy.conf:/data/nginx/conf/proxy.conf:rw,cached
-      - ./conf/waf.conf:/data/nginx/conf/waf.conf:rw,cached
-      - ./conf/waf:/data/nginx/conf/waf:rw,cached
+      - ./conf/nginx/www:/www:rw,cached
+      - ./conf/nginx/ssl:/ssl:rw,cached
+      - ./conf/nginx/vhost:/data/nginx/conf/vhost:rw,cached
+      - ./conf/nginx/nginx.conf:/data/nginx/conf/nginx.conf:rw,cached
+      - ./conf/nginx/gzip.conf:/data/nginx/conf/gzip.conf:rw,cached
+      - ./conf/nginx/cache.conf:/data/nginx/conf/cache.conf:rw,cached
+      - ./conf/nginx/proxy.conf:/data/nginx/conf/proxy.conf:rw,cached
+      - ./conf/nginx/waf.conf:/data/nginx/conf/waf.conf:rw,cached
+      - ./conf/nginx/waf:/data/nginx/conf/waf:rw,cached
       - ./logs:/data/nginx/logs:delegated
       - /usr/share/zoneinfo:/usr/share/zoneinfo:ro,cached
       - /etc/localtime:/etc/localtime:ro,cached
