@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   nginx:
+    tty: true
     restart: always
     container_name: nginx
     hostname: nginx
@@ -16,7 +17,8 @@ services:
       - ./conf/nginx/proxy.conf:/data/nginx/conf/proxy.conf:rw,cached
       - ./conf/nginx/waf.conf:/data/nginx/conf/waf.conf:rw,cached
       - ./conf/nginx/waf:/data/nginx/conf/waf:rw,cached
-      - ./logs:/data/nginx/logs:delegated
+      - ./logs/nginx:/data/nginx/logs:delegated
+      # 同步宿主机时区与时间
       - /usr/share/zoneinfo:/usr/share/zoneinfo:ro,cached
       - /etc/localtime:/etc/localtime:ro,cached
     cap_add:
