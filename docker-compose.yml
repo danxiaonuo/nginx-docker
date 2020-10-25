@@ -8,7 +8,7 @@ services:
     hostname: nginx
     image: danxiaonuo/nginx:latest
     volumes:
-      - ./conf/nginx/www:/www:rw,cached
+      - ./www:/www:rw,cached
       - ./conf/nginx/ssl:/ssl:rw,cached
       - ./conf/nginx/vhost:/data/nginx/conf/vhost:rw,cached
       - ./conf/nginx/nginx.conf:/data/nginx/conf/nginx.conf:rw,cached
