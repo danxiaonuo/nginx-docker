@@ -439,6 +439,8 @@ COPY conf/nginx/nginx.conf /data/nginx/conf/nginx.conf
 COPY conf/nginx/gzip.conf /data/nginx/conf/gzip.conf
 COPY conf/nginx/cache.conf /data/nginx/conf/cache.conf
 COPY conf/nginx/proxy.conf /data/nginx/conf/proxy.conf
+COPY conf/nginx/php.conf /data/nginx/conf/php.conf
+COPY conf/nginx/websocket.conf /data/nginx/conf/websocket.conf
 COPY conf/nginx/waf.conf /data/nginx/conf/waf.conf
 COPY conf/nginx/waf /data/nginx/conf/waf
 COPY conf/nginx/ssl /data/nginx/conf/ssl
