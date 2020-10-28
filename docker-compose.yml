@@ -17,6 +17,8 @@ services:
       - ./conf/nginx/gzip.conf:/data/nginx/conf/gzip.conf:rw,cached
       - ./conf/nginx/cache.conf:/data/nginx/conf/cache.conf:rw,cached
       - ./conf/nginx/proxy.conf:/data/nginx/conf/proxy.conf:rw,cached
+      - ./conf/nginx/php.conf:/data/nginx/conf/php.conf:rw,cached
+      - ./conf/nginx/websocket.conf:/data/nginx/conf/websocket.conf:rw,cached
       - ./conf/nginx/waf.conf:/data/nginx/conf/waf.conf:rw,cached
       - ./conf/nginx/waf:/data/nginx/conf/waf:rw,cached
       # 日志目录
