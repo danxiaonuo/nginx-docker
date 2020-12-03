@@ -7,6 +7,9 @@ MAINTAINER danxiaonuo
 # 时区设置
 ARG TZ=Asia/Shanghai
 ENV TZ=$TZ
+# 语言设置
+ARG LANG=C.UTF-8
+ENV LANG=$LANG
 
 # 镜像变量
 ARG DOCKER_IMAGE=danxiaonuo/nginx
@@ -371,6 +374,14 @@ RUN set -eux \
 #         构建最新的镜像                  #
 ##########################################
 FROM base
+# 作者描述信息
+MAINTAINER danxiaonuo
+# 时区设置
+ARG TZ=Asia/Shanghai
+ENV TZ=$TZ
+# 语言设置
+ARG LANG=C.UTF-8
+ENV LANG=$LANG
 
 ARG PKG_DEPS="\
       tzdata \
@@ -470,7 +481,7 @@ RUN set -eux \
     && ln -sf /dev/stderr /data/nginx/logs/error.log \
 # 安装dumb-init
 # ##############################################################################
-    && curl -Lo /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMBINIT_VERSION}/dumb-init_${DUMBINIT_VERSION}_x86_64 \
+    && wget --no-check-certificate https://github.com/Yelp/dumb-init/releases/download/v${DUMBINIT_VERSION}/dumb-init_${DUMBINIT_VERSION}_x86_64 -O /usr/bin/dumb-init \
     && chmod +x /usr/bin/dumb-init \
 # 创建用户和用户组
     && addgroup -g 32548 -S nginx \
