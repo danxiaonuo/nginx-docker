@@ -21,11 +21,14 @@ on:
     inputs:
       build:
         description: 'build nginx'
-        required: false
+        required: true
         default: 'build nginx'
-  # 每天的0点钟自动更新
+  # 定时触发编译(每天早5点)
   schedule:
-     - cron: '0 0 * * *'
+     - cron: '0 21 * * *'
+  # 点☆Star触发开始编译
+  watch:  
+     types: [started]
      
  # 任务集
 jobs:
@@ -86,5 +89,10 @@ jobs:
         image_version: ${{ matrix.DOCKER_TAG }}
         docker_file: '.'
         
-    - name: 获取阿里云镜像地址
-      run: echo "这是阿里云镜像地址 ${{ steps.buildAndPushImage.outputs.image_pull_url }}"
+      
+    - name: 删除旧的GitHub-workflow
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        repository: ${{ github.repository }}
+        retain_days: 1
+        keep_minimum_runs: 1    #保留多少个workflow不删除    
