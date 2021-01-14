@@ -73,7 +73,7 @@ services:
           hard: 65535
  
  
- networks:
+networks:
   app_net:
     driver: bridge
     enable_ipv6: true
