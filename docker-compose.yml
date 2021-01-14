@@ -53,6 +53,9 @@ services:
     # 指定设备映射关系
     devices:
      - /dev/net/tun
+    # 解决容器的依赖
+    #depends_on:
+    #  - ""
     # 配置容器连接的网络
     networks:
       app_net:
