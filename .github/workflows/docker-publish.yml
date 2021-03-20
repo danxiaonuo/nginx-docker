@@ -21,7 +21,7 @@ on:
     inputs:
       build:
         description: 'build nginx'
-        required: true
+        required: false
         default: 'build nginx'
   # 定时触发编译(每天早5点)
   schedule:
