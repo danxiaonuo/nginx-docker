@@ -318,42 +318,48 @@ RUN set -eux \
 RUN set -eux \
 # 安装LUAJIT
 && cd ${DOWNLOAD_SRC}/luajit2-${LUAJIT_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装LUA_RESTY_CORE
 && cd ${DOWNLOAD_SRC}/lua-resty-core-${LUA_RESTY_CORE_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装PROMETHEUS
 && mv ${DOWNLOAD_SRC}/nginx-lua-prometheus-${PROMETHEUS_VERSION}/*.lua ${LUA_LIB_DIR}/ \
 # 安装LUA_RESTY_LRUCACHE
 && cd ${DOWNLOAD_SRC}/lua-resty-lrucache-${LUA_RESTY_LRUCACHE_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装CLOUDFLARE_COOKIE
 && cd ${DOWNLOAD_SRC}/lua-resty-cookie-${CLOUDFLARE_COOKIE_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装OPENRESTY_DNS
 && cd ${DOWNLOAD_SRC}/lua-resty-dns-${OPENRESTY_DNS_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装OPENRESTY_MEMCACHED
 && cd ${DOWNLOAD_SRC}/lua-resty-memcached-${OPENRESTY_MEMCACHED_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装OPENRESTY_MYSQL
 && cd ${DOWNLOAD_SRC}/lua-resty-mysql-${OPENRESTY_MYSQL_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装OPENRESTY_REDIS
 && cd ${DOWNLOAD_SRC}/lua-resty-redis-${OPENRESTY_REDIS_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装OPENRESTY_SHELL
 && cd ${DOWNLOAD_SRC}/lua-resty-shell-${OPENRESTY_SHELL_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装OPENRESTY_HEALTHCHECK
 && cd ${DOWNLOAD_SRC}/lua-resty-upstream-healthcheck-${OPENRESTY_HEALTHCHECK_VERSION} \
-&& make -j "$(nproc)" && make install \
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
 # 安装OPENRESTY_WEBSOCKET
 && cd ${DOWNLOAD_SRC}/lua-resty-websocket-${OPENRESTY_WEBSOCKET_VERSION} \
-&& make -j "$(nproc)" && make install
+&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install
 # 安装NGINX
 RUN set -eux \
 && cd ${DOWNLOAD_SRC}/nginx-${NGINX_VERSION} \
+&& sed -i '1,/nginx_version/{s/.*nginx_version.*/#define nginx_version      1010/}' src/core/nginx.h \
+&& sed -i '1,/NGINX_VERSION/{s/.*NGINX_VERSION.*/#define NGINX_VERSION      "1.1"/}' src/core/nginx.h \
+&& sed -i '14s#nginx#xiaonuo_waf#' src/core/nginx.h \
+&& sed -i '1,/NGINX_VAR/{s/.*NGINX_VAR.*/#define NGINX_VAR          "XIAONUO_WAF"/}' src/core/nginx.h \
+&& sed -i 's#Server: nginx#Server: xiaonuo#g' src/http/ngx_http_header_filter_module.c \
+&& sed -i 's#<hr><center>nginx</center>#<hr><center>xiaonuo</center>#g' src/http/ngx_http_special_response.c \
 && ./configure ${NGINX_BUILD_CONFIG} \
 --add-module=${DOWNLOAD_SRC}/headers-more-nginx-module-${OPENRESTY_HEADERS_VERSION} \
 --add-module=${DOWNLOAD_SRC}/stream-lua-nginx-module-${OPENRESTY_STREAMLUA_VERSION} \
@@ -363,8 +369,8 @@ RUN set -eux \
 || ./configure ${NGINX_BUILD_CONFIG} \
 --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
 --with-ld-opt='-Wl,-rpath,$LUAJIT_LIB -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
-&& make -j "$(nproc)" build \
-&& make install \
+&& make -j$(($(nproc)+1)) build \
+&& make -j$(($(nproc)+1)) install \
 && mv ${DOWNLOAD_SRC}/ngx_lua_waf-${NGX_LUA_WAF_VERSION} ${NGINX_DIR}/conf/waf
 
 # ##############################################################################
