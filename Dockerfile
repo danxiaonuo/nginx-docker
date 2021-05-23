@@ -354,8 +354,8 @@ RUN set -eux \
 # 安装NGINX
 RUN set -eux \
 && cd ${DOWNLOAD_SRC}/nginx-${NGINX_VERSION} \
-&& sed -i '1,/nginx_version/{s/.*nginx_version.*/#define nginx_version      1010/}' src/core/nginx.h \
-&& sed -i '1,/NGINX_VERSION/{s/.*NGINX_VERSION.*/#define NGINX_VERSION      "1.1"/}' src/core/nginx.h \
+# && sed -i '1,/nginx_version/{s/.*nginx_version.*/#define nginx_version      1010/}' src/core/nginx.h \
+# && sed -i '1,/NGINX_VERSION/{s/.*NGINX_VERSION.*/#define NGINX_VERSION      "1.1"/}' src/core/nginx.h \
 && sed -i '14s#nginx#xiaonuo_waf#' src/core/nginx.h \
 && sed -i '1,/NGINX_VAR/{s/.*NGINX_VAR.*/#define NGINX_VAR          "XIAONUO_WAF"/}' src/core/nginx.h \
 && sed -i 's#Server: nginx#Server: xiaonuo#g' src/http/ngx_http_header_filter_module.c \
