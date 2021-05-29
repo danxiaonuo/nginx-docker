@@ -18,10 +18,6 @@ ARG DOCKER_IMAGE_OS=alpine
 ENV DOCKER_IMAGE_OS=$DOCKER_IMAGE_OS
 ARG DOCKER_IMAGE_TAG=latest
 ENV DOCKER_IMAGE_TAG=$DOCKER_IMAGE_TAG
-ARG BUILD_DATE
-ENV BUILD_DATE=$BUILD_DATE
-ARG VCS_REF
-ENV VCS_REF=$VCS_REF
 
 # ##############################################################################
 
@@ -156,48 +152,48 @@ ENV DUMBINIT_VERSION=$DUMBINIT_VERSION
 ARG NGINX_VERSION=1.20.0
 ENV NGINX_VERSION=$NGINX_VERSION
 ARG NGINX_BUILD_CONFIG="\
---prefix=${NGINX_DIR} \
---sbin-path=${NGINX_DIR}/sbin/nginx \
---modules-path=${NGINX_DIR}/modules \
---conf-path=${NGINX_DIR}/conf/nginx.conf \
---error-log-path=${NGINX_DIR}/logs/error.log \
---http-log-path=${NGINX_DIR}/logs/access.log \
---pid-path=${NGINX_DIR}/logs/nginx.pid \
---lock-path=${NGINX_DIR}/logs/nginx.lock \
---http-client-body-temp-path=${NGINX_DIR}/temp/client_temp \
---http-proxy-temp-path=${NGINX_DIR}/temp/proxy_temp \
---http-fastcgi-temp-path=${NGINX_DIR}/temp/fastcgi_temp \
---http-uwsgi-temp-path=${NGINX_DIR}/temp/uwsgi_temp \
---http-scgi-temp-path=${NGINX_DIR}/temp/scgi_temp \
---add-module=${DOWNLOAD_SRC}/ngx_devel_kit-${NGX_DEVEL_KIT_VERSION} \
---add-module=${DOWNLOAD_SRC}/lua-nginx-module-${LUA_NGINX_MODULE_VERSION} \
---add-module=${DOWNLOAD_SRC}/nginx-http-concat-${NGINX_HTTP_CONCAT_VERSION} \
---add-module=${DOWNLOAD_SRC}/lua-upstream-nginx-module-${LUA_UPSTREAM_VERSION} \
---user=nginx \
---group=nginx \
---with-http_ssl_module \
---with-http_realip_module \
---with-http_addition_module \
---with-http_sub_module \
---with-http_dav_module \
---with-http_flv_module \
---with-http_mp4_module \
---with-http_gunzip_module \
---with-http_gzip_static_module \
---with-http_random_index_module \
---with-http_secure_link_module \
---with-http_stub_status_module \
---with-http_auth_request_module \
---with-threads \
---with-stream \
---with-stream_ssl_module \
---with-http_slice_module \
---with-mail \
---with-mail_ssl_module \
---with-file-aio \
---with-http_v2_module \
---with-http_image_filter_module \
---with-ipv6 \
+    --prefix=${NGINX_DIR} \
+    --sbin-path=${NGINX_DIR}/sbin/nginx \
+    --modules-path=${NGINX_DIR}/modules \
+    --conf-path=${NGINX_DIR}/conf/nginx.conf \
+    --error-log-path=${NGINX_DIR}/logs/error.log \
+    --http-log-path=${NGINX_DIR}/logs/access.log \
+    --pid-path=${NGINX_DIR}/logs/nginx.pid \
+    --lock-path=${NGINX_DIR}/logs/nginx.lock \
+    --http-client-body-temp-path=${NGINX_DIR}/temp/client_temp \
+    --http-proxy-temp-path=${NGINX_DIR}/temp/proxy_temp \
+    --http-fastcgi-temp-path=${NGINX_DIR}/temp/fastcgi_temp \
+    --http-uwsgi-temp-path=${NGINX_DIR}/temp/uwsgi_temp \
+    --http-scgi-temp-path=${NGINX_DIR}/temp/scgi_temp \
+    --add-module=${DOWNLOAD_SRC}/ngx_devel_kit-${NGX_DEVEL_KIT_VERSION} \
+    --add-module=${DOWNLOAD_SRC}/lua-nginx-module-${LUA_NGINX_MODULE_VERSION} \
+    --add-module=${DOWNLOAD_SRC}/nginx-http-concat-${NGINX_HTTP_CONCAT_VERSION} \
+    --add-module=${DOWNLOAD_SRC}/lua-upstream-nginx-module-${LUA_UPSTREAM_VERSION} \
+    --user=nginx \
+    --group=nginx \
+    --with-http_ssl_module \
+    --with-http_realip_module \
+    --with-http_addition_module \
+    --with-http_sub_module \
+    --with-http_dav_module \
+    --with-http_flv_module \
+    --with-http_mp4_module \
+    --with-http_gunzip_module \
+    --with-http_gzip_static_module \
+    --with-http_random_index_module \
+    --with-http_secure_link_module \
+    --with-http_stub_status_module \
+    --with-http_auth_request_module \
+    --with-threads \
+    --with-stream \
+    --with-stream_ssl_module \
+    --with-http_slice_module \
+    --with-mail \
+    --with-mail_ssl_module \
+    --with-file-aio \
+    --with-http_v2_module \
+    --with-http_image_filter_module \
+    --with-ipv6 \
 "
 ENV NGINX_BUILD_CONFIG=$NGINX_BUILD_CONFIG
 
@@ -215,23 +211,23 @@ ARG BUILD_DEPS="\
 ENV BUILD_DEPS=$BUILD_DEPS
 
 ARG NGINX_BUILD_DEPS="\
-# NGINX
-      alpine-sdk \
-      bash \
-      findutils \
-      gcc \
-      gd-dev \
-      geoip-dev \
-      libc-dev \
-      libedit-dev \
-      libxslt-dev \
-      linux-headers \
-      make \
-      mercurial \
-      openssl-dev \
-      pcre-dev \
-      perl-dev \
-      zlib-dev"
+    # NGINX
+    alpine-sdk \
+    bash \
+    findutils \
+    gcc \
+    gd-dev \
+    geoip-dev \
+    libc-dev \
+    libedit-dev \
+    libxslt-dev \
+    linux-headers \
+    make \
+    mercurial \
+    openssl-dev \
+    pcre-dev \
+    perl-dev \
+    zlib-dev"
 ENV NGINX_BUILD_DEPS=$NGINX_BUILD_DEPS
 
 ####################################
@@ -239,139 +235,141 @@ ENV NGINX_BUILD_DEPS=$NGINX_BUILD_DEPS
 ####################################
 FROM base AS builder
 
-# 修改源地址
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
-# ***** 安装相关依赖并更新系统软件 *****
 # ***** 安装依赖 *****
-RUN set -eux \
+RUN set -eux && \
+   # 修改源地址
+   sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
    # 更新源地址
-   && apk update \
+   apk update && \
    # 更新系统并更新系统软件
-   && apk upgrade && apk upgrade \
-   && apk add -U --update $BUILD_DEPS $NGINX_BUILD_DEPS \
+   apk upgrade && apk upgrade && \
+   apk add --no-cache --clean-protected $BUILD_DEPS $NGINX_BUILD_DEPS && \
+   apk add --no-cache --virtual build-dependencies $BUILD_DEPS && \
+   rm -rf /var/cache/apk/* && \
    # 更新时区
-   && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+   ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime && \
    # 更新时间
-   && echo ${TZ} > /etc/timezone
+   echo ${TZ} > /etc/timezone
       
 # ##############################################################################
 # ***** 创建相关目录 *****
-RUN set -eux \
-&& mkdir -pv ${DOWNLOAD_SRC} \
-&& mkdir -p ${NGINX_DIR}/temp/client_temp \
-&& mkdir -p ${NGINX_DIR}/temp/proxy_cache \
-&& mkdir -p ${NGINX_DIR}/temp/proxy_temp \
-&& mkdir -p ${NGINX_DIR}/temp/fastcgi_temp \
-&& mkdir -p ${NGINX_DIR}/temp/uwsgi_temp \
-&& mkdir -p ${NGINX_DIR}/temp/scgi_temp \
-&& mkdir -p ${NGINX_DIR}/logs/hack
-  
-RUN set -eux \
+RUN set -eux && \
+    mkdir -pv ${DOWNLOAD_SRC} && \
+    mkdir -p ${NGINX_DIR}/temp/client_temp && \
+    mkdir -p ${NGINX_DIR}/temp/proxy_cache && \
+    mkdir -p ${NGINX_DIR}/temp/proxy_temp && \
+    mkdir -p ${NGINX_DIR}/temp/fastcgi_temp && \
+    mkdir -p ${NGINX_DIR}/temp/uwsgi_temp && \
+    mkdir -p ${NGINX_DIR}/temp/scgi_temp && \
+    mkdir -p ${NGINX_DIR}/logs/hack
+
 # ##############################################################################
-# ***** 下载源码包 *****
-&& wget --no-check-certificate http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/nginx.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/luajit2.tar.gz \
-&& wget --no-check-certificate https://github.com/simpl/ngx_devel_kit/archive/v${NGX_DEVEL_KIT_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/ngx_devel_kit.tar.gz \
-&& wget --no-check-certificate https://github.com/Refinitiv/nginx-sticky-module-ng/archive/${NGINX_STICKY_MODULE_NG_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/nginx-sticky-module-ng.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-nginx-module/archive/v${LUA_NGINX_MODULE_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-nginx-module.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-core/archive/v${LUA_RESTY_CORE_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-core.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-lrucache/archive/v${LUA_RESTY_LRUCACHE_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/ngx_cache_purge.tar.gz \
-&& wget --no-check-certificate https://github.com/alibaba/nginx-http-concat/archive/${NGINX_HTTP_CONCAT_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/nginx-http-concat.tar.gz \
-&& wget --no-check-certificate https://github.com/loveshell/ngx_lua_waf/archive/v${NGX_LUA_WAF_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/ngx_lua_waf.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/headers-more-nginx-module/archive/v${OPENRESTY_HEADERS_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/headers-more-nginx-module.tar.gz \
-&& wget --no-check-certificate https://github.com/cloudflare/lua-resty-cookie/archive/v${CLOUDFLARE_COOKIE_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-cookie.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-dns/archive/v${OPENRESTY_DNS_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-dns.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-memcached/archive/v${OPENRESTY_MEMCACHED_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-memcached.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-mysql/archive/v${OPENRESTY_MYSQL_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-mysql.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-redis/archive/v${OPENRESTY_REDIS_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-redis.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-shell/archive/v${OPENRESTY_SHELL_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-shell.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-upstream-healthcheck/archive/v${OPENRESTY_HEALTHCHECK_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-upstream-healthcheck.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-resty-websocket/archive/v${OPENRESTY_WEBSOCKET_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-resty-websocket.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/lua-upstream-nginx-module/archive/v${LUA_UPSTREAM_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/lua-upstream-nginx-module.tar.gz \
-&& wget --no-check-certificate https://github.com/knyar/nginx-lua-prometheus/archive/${PROMETHEUS_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/nginx-lua-prometheus.tar.gz \
-&& wget --no-check-certificate https://github.com/openresty/stream-lua-nginx-module/archive/v${OPENRESTY_STREAMLUA_VERSION}.tar.gz \
--O ${DOWNLOAD_SRC}/stream-lua-nginx-module.tar.gz \
-&& cd ${DOWNLOAD_SRC} && for tar in *.tar.gz;  do tar xvf $tar -C ${DOWNLOAD_SRC}/; done
+# ***** 下载源码包 *****  
+RUN set -eux && \
+    wget --no-check-certificate http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/nginx.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/luajit2.tar.gz && \
+    wget --no-check-certificate https://github.com/simpl/ngx_devel_kit/archive/v${NGX_DEVEL_KIT_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/ngx_devel_kit.tar.gz && \
+    wget --no-check-certificate https://github.com/Refinitiv/nginx-sticky-module-ng/archive/${NGINX_STICKY_MODULE_NG_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/nginx-sticky-module-ng.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-nginx-module/archive/v${LUA_NGINX_MODULE_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-nginx-module.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-core/archive/v${LUA_RESTY_CORE_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-core.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-lrucache/archive/v${LUA_RESTY_LRUCACHE_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/ngx_cache_purge.tar.gz && \
+    wget --no-check-certificate https://github.com/alibaba/nginx-http-concat/archive/${NGINX_HTTP_CONCAT_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/nginx-http-concat.tar.gz && \
+    wget --no-check-certificate https://github.com/loveshell/ngx_lua_waf/archive/v${NGX_LUA_WAF_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/ngx_lua_waf.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/headers-more-nginx-module/archive/v${OPENRESTY_HEADERS_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/headers-more-nginx-module.tar.gz && \
+    wget --no-check-certificate https://github.com/cloudflare/lua-resty-cookie/archive/v${CLOUDFLARE_COOKIE_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-cookie.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-dns/archive/v${OPENRESTY_DNS_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-dns.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-memcached/archive/v${OPENRESTY_MEMCACHED_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-memcached.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-mysql/archive/v${OPENRESTY_MYSQL_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-mysql.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-redis/archive/v${OPENRESTY_REDIS_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-redis.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-shell/archive/v${OPENRESTY_SHELL_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-shell.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-upstream-healthcheck/archive/v${OPENRESTY_HEALTHCHECK_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-upstream-healthcheck.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-resty-websocket/archive/v${OPENRESTY_WEBSOCKET_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-resty-websocket.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/lua-upstream-nginx-module/archive/v${LUA_UPSTREAM_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/lua-upstream-nginx-module.tar.gz && \
+    wget --no-check-certificate https://github.com/knyar/nginx-lua-prometheus/archive/${PROMETHEUS_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/nginx-lua-prometheus.tar.gz && \
+    wget --no-check-certificate https://github.com/openresty/stream-lua-nginx-module/archive/v${OPENRESTY_STREAMLUA_VERSION}.tar.gz \
+    -O ${DOWNLOAD_SRC}/stream-lua-nginx-module.tar.gz && \
+    cd ${DOWNLOAD_SRC} && for tar in *.tar.gz;  do tar xvf $tar -C ${DOWNLOAD_SRC}/; done
 
 # ##############################################################################
 # ***** 安装中间件 *****
-RUN set -eux \
-# 安装LUAJIT
-&& cd ${DOWNLOAD_SRC}/luajit2-${LUAJIT_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装LUA_RESTY_CORE
-&& cd ${DOWNLOAD_SRC}/lua-resty-core-${LUA_RESTY_CORE_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装PROMETHEUS
-&& mv ${DOWNLOAD_SRC}/nginx-lua-prometheus-${PROMETHEUS_VERSION}/*.lua ${LUA_LIB_DIR}/ \
-# 安装LUA_RESTY_LRUCACHE
-&& cd ${DOWNLOAD_SRC}/lua-resty-lrucache-${LUA_RESTY_LRUCACHE_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装CLOUDFLARE_COOKIE
-&& cd ${DOWNLOAD_SRC}/lua-resty-cookie-${CLOUDFLARE_COOKIE_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装OPENRESTY_DNS
-&& cd ${DOWNLOAD_SRC}/lua-resty-dns-${OPENRESTY_DNS_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装OPENRESTY_MEMCACHED
-&& cd ${DOWNLOAD_SRC}/lua-resty-memcached-${OPENRESTY_MEMCACHED_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装OPENRESTY_MYSQL
-&& cd ${DOWNLOAD_SRC}/lua-resty-mysql-${OPENRESTY_MYSQL_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装OPENRESTY_REDIS
-&& cd ${DOWNLOAD_SRC}/lua-resty-redis-${OPENRESTY_REDIS_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装OPENRESTY_SHELL
-&& cd ${DOWNLOAD_SRC}/lua-resty-shell-${OPENRESTY_SHELL_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装OPENRESTY_HEALTHCHECK
-&& cd ${DOWNLOAD_SRC}/lua-resty-upstream-healthcheck-${OPENRESTY_HEALTHCHECK_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install \
-# 安装OPENRESTY_WEBSOCKET
-&& cd ${DOWNLOAD_SRC}/lua-resty-websocket-${OPENRESTY_WEBSOCKET_VERSION} \
-&& make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install
-# 安装NGINX
-RUN set -eux \
-&& cd ${DOWNLOAD_SRC}/nginx-${NGINX_VERSION} \
-# && sed -i '1,/nginx_version/{s/.*nginx_version.*/#define nginx_version      1010/}' src/core/nginx.h \
-# && sed -i '1,/NGINX_VERSION/{s/.*NGINX_VERSION.*/#define NGINX_VERSION      "1.1"/}' src/core/nginx.h \
-&& sed -i '14s#nginx#xiaonuo_waf#' src/core/nginx.h \
-&& sed -i '1,/NGINX_VAR/{s/.*NGINX_VAR.*/#define NGINX_VAR          "XIAONUO_WAF"/}' src/core/nginx.h \
-&& sed -i 's#Server: nginx#Server: xiaonuo#g' src/http/ngx_http_header_filter_module.c \
-&& sed -i 's#<hr><center>nginx</center>#<hr><center>xiaonuo</center>#g' src/http/ngx_http_special_response.c \
-&& ./configure ${NGINX_BUILD_CONFIG} \
---add-module=${DOWNLOAD_SRC}/headers-more-nginx-module-${OPENRESTY_HEADERS_VERSION} \
---add-module=${DOWNLOAD_SRC}/stream-lua-nginx-module-${OPENRESTY_STREAMLUA_VERSION} \
-#--add-module=${DOWNLOAD_SRC}/nginx-sticky-module-ng-${NGINX_STICKY_MODULE_NG_VERSION} \
---with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
---with-ld-opt='-Wl,-rpath,$LUAJIT_LIB -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
-|| ./configure ${NGINX_BUILD_CONFIG} \
---with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
---with-ld-opt='-Wl,-rpath,$LUAJIT_LIB -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
-&& make -j$(($(nproc)+1)) build \
-&& make -j$(($(nproc)+1)) install \
-&& mv ${DOWNLOAD_SRC}/ngx_lua_waf-${NGX_LUA_WAF_VERSION} ${NGINX_DIR}/conf/waf
+RUN set -eux && \
+    # 安装LUAJIT
+    cd ${DOWNLOAD_SRC}/luajit2-${LUAJIT_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装LUA_RESTY_CORE
+    cd ${DOWNLOAD_SRC}/lua-resty-core-${LUA_RESTY_CORE_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装PROMETHEUS
+    mv ${DOWNLOAD_SRC}/nginx-lua-prometheus-${PROMETHEUS_VERSION}/*.lua ${LUA_LIB_DIR}/ && \
+    # 安装LUA_RESTY_LRUCACHE
+    cd ${DOWNLOAD_SRC}/lua-resty-lrucache-${LUA_RESTY_LRUCACHE_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装CLOUDFLARE_COOKIE
+    cd ${DOWNLOAD_SRC}/lua-resty-cookie-${CLOUDFLARE_COOKIE_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装OPENRESTY_DNS
+    cd ${DOWNLOAD_SRC}/lua-resty-dns-${OPENRESTY_DNS_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装OPENRESTY_MEMCACHED
+    cd ${DOWNLOAD_SRC}/lua-resty-memcached-${OPENRESTY_MEMCACHED_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装OPENRESTY_MYSQL
+    cd ${DOWNLOAD_SRC}/lua-resty-mysql-${OPENRESTY_MYSQL_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装OPENRESTY_REDIS
+    cd ${DOWNLOAD_SRC}/lua-resty-redis-${OPENRESTY_REDIS_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装OPENRESTY_SHELL
+    cd ${DOWNLOAD_SRC}/lua-resty-shell-${OPENRESTY_SHELL_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装OPENRESTY_HEALTHCHECK
+    cd ${DOWNLOAD_SRC}/lua-resty-upstream-healthcheck-${OPENRESTY_HEALTHCHECK_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install && \
+    # 安装OPENRESTY_WEBSOCKET
+    cd ${DOWNLOAD_SRC}/lua-resty-websocket-${OPENRESTY_WEBSOCKET_VERSION} && \
+    make -j$(($(nproc)+1)) && make -j$(($(nproc)+1)) install
+	
+# ***** 安装NGINX *****
+RUN set -eux && \
+    cd ${DOWNLOAD_SRC}/nginx-${NGINX_VERSION} && \
+    # sed -i '1,/nginx_version/{s/.*nginx_version.*/#define nginx_version      1010/}' src/core/nginx.h && \
+    # sed -i '1,/NGINX_VERSION/{s/.*NGINX_VERSION.*/#define NGINX_VERSION      "1.1"/}' src/core/nginx.h && \
+    sed -i '14s#nginx#xiaonuo_waf#' src/core/nginx.h && \
+    sed -i '1,/NGINX_VAR/{s/.*NGINX_VAR.*/#define NGINX_VAR          "XIAONUO_WAF"/}' src/core/nginx.h && \
+    sed -i 's#Server: nginx#Server: xiaonuo#g' src/http/ngx_http_header_filter_module.c && \
+    sed -i 's#<hr><center>nginx</center>#<hr><center>xiaonuo</center>#g' src/http/ngx_http_special_response.c && \
+    ./configure ${NGINX_BUILD_CONFIG} \
+    --add-module=${DOWNLOAD_SRC}/headers-more-nginx-module-${OPENRESTY_HEADERS_VERSION} \
+    --add-module=${DOWNLOAD_SRC}/stream-lua-nginx-module-${OPENRESTY_STREAMLUA_VERSION} \
+    # --add-module=${DOWNLOAD_SRC}/nginx-sticky-module-ng-${NGINX_STICKY_MODULE_NG_VERSION} \
+    --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
+    --with-ld-opt='-Wl,-rpath,$LUAJIT_LIB -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
+    || ./configure ${NGINX_BUILD_CONFIG} \
+    --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
+    --with-ld-opt='-Wl,-rpath,$LUAJIT_LIB -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' && \
+    make -j$(($(nproc)+1)) build && \
+    make -j$(($(nproc)+1)) install && \
+    mv ${DOWNLOAD_SRC}/ngx_lua_waf-${NGX_LUA_WAF_VERSION} ${NGINX_DIR}/conf/waf
 
 # ##############################################################################
 
@@ -390,6 +388,10 @@ ARG LANG=C.UTF-8
 ENV LANG=$LANG
 
 ARG PKG_DEPS="\
+      zsh \
+      iproute2 \
+      git \
+      vim \
       tzdata \
       curl \
       ca-certificates \
@@ -399,19 +401,25 @@ ARG PKG_DEPS="\
       zlib-dev"
 ENV PKG_DEPS=$PKG_DEPS
 
-# 修改源地址
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 # ***** 安装依赖 *****
-RUN set -eux \
+RUN set -eux && \
+   # 修改源地址
+   sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
    # 更新源地址
-   && apk update \
+   apk update && \
    # 更新系统并更新系统软件
-   && apk upgrade && apk upgrade \
-   && apk add -U --update $PKG_DEPS \
+   apk upgrade && apk upgrade && \
+   apk add --no-cache --clean-protected $PKG_DEPS && \
+   rm -rf /var/cache/apk/* && \
    # 更新时区
-   && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+   ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime && \
    # 更新时间
-   && echo ${TZ} > /etc/timezone
+   echo ${TZ} > /etc/timezone && \
+   # 更改为zsh
+   sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true && \
+   sed -i -e "s/bin\/ash/bin\/zsh/" /etc/passwd && \
+   sed -i -e 's/mouse=/mouse-=/g' /usr/share/vim/vim*/defaults.vim && \
+   /bin/zsh
 
 # http://label-schema.org/rc1/
 LABEL maintainer="danxiaonuo <danxiaonuo@danxiaonuo.me>" \
@@ -465,50 +473,52 @@ COPY conf/nginx/vhost /data/nginx/conf/vhost
 COPY www /www
 
 # 安装相关依赖
-RUN set -eux \
-&& apk add -U --update --virtual .gettext gettext \
-    && mv /usr/bin/envsubst /tmp/ \
-    \
-    && runDeps="$( \
+RUN set -eux && \
+    apk add --no-cache --virtual .gettext gettext && \
+    mv /usr/bin/envsubst /tmp/ && \
+    runDeps="$( \
         scanelf --needed --nobanner ${NGINX_DIR}/sbin/nginx ${NGINX_DIR}/modules/*.so ${LUAJIT_LIB}/*.so /tmp/envsubst \
             | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
             | sort -u \
             | xargs -r apk info --installed \
             | sort -u \
-    )" \
-    && apk add --no-cache --virtual .$NGINX_BUILD_DEPS $runDeps \
-    && apk del .gettext \
-    && mv /tmp/envsubst /usr/local/bin/ 
+    )" && \
+    apk add --no-cache --virtual .$NGINX_BUILD_DEPS $runDeps && \
+    apk del .gettext && \
+    mv /tmp/envsubst /usr/local/bin/ 
 
 
 # 将请求和错误日志转发到docker日志收集器
-RUN set -eux \
-    && ln -sf /dev/stdout /data/nginx/logs/access.log \
-    && ln -sf /dev/stderr /data/nginx/logs/error.log \
+RUN set -eux && \
+    ln -sf /dev/stdout /data/nginx/logs/access.log && \
+    ln -sf /dev/stderr /data/nginx/logs/error.log && \
 # 安装dumb-init
 # ##############################################################################
-    && wget --no-check-certificate https://github.com/Yelp/dumb-init/releases/download/v${DUMBINIT_VERSION}/dumb-init_${DUMBINIT_VERSION}_x86_64 -O /usr/bin/dumb-init \
-    && chmod +x /usr/bin/dumb-init \
+    wget --no-check-certificate https://github.com/Yelp/dumb-init/releases/download/v${DUMBINIT_VERSION}/dumb-init_${DUMBINIT_VERSION}_x86_64 -O /usr/bin/dumb-init && \
+    chmod +x /usr/bin/dumb-init && \
 # 创建用户和用户组
-    && addgroup -g 32548 -S nginx \
-    && adduser -S -D -H -u 32548 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx \
+    addgroup -g 32548 -S nginx && \
+    adduser -S -D -H -u 32548 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx && \
 # smoke test
 # ##############################################################################
-    && ln -sf ${NGINX_DIR}/sbin/* /usr/sbin/ \
-    && nginx -V \
-    && nginx -t
+    ln -sf ${NGINX_DIR}/sbin/* /usr/sbin/ && \
+    nginx -V && \
+    nginx -t
 
 # 自动检测服务是否可用
 HEALTHCHECK --interval=30s --timeout=3s CMD curl --fail http://localhost/ || exit 1
 
-# 监听端口
+# ***** 监听端口 *****
 EXPOSE 80 443
 
-# 容器信号处理
+# ***** 工作目录 *****
+WORKDIR /data/nginx
+
+# ***** 容器信号处理 *****
 STOPSIGNAL SIGQUIT
 
-# 入口
+# ***** 入口 *****
 ENTRYPOINT ["dumb-init"]
 
-# 启动命令
+# ***** 启动命令 *****
 CMD ["nginx", "-g", "daemon off;"]
