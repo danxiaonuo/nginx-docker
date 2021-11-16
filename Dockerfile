@@ -239,8 +239,9 @@ FROM base AS builder
 RUN set -eux && \
    # 修改源地址
    sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
-   # 更新源和更新系统软件
-   apk update && upgrade \
+   # 更新源地址并更新系统软件
+   && apk update && apk upgrade \
+   # 安装依赖包
    apk add --no-cache --clean-protected $BUILD_DEPS $NGINX_BUILD_DEPS && \
    apk add --no-cache --virtual build-dependencies $BUILD_DEPS && \
    rm -rf /var/cache/apk/* && \
@@ -403,8 +404,9 @@ ENV PKG_DEPS=$PKG_DEPS
 RUN set -eux && \
    # 修改源地址
    sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
-   # 更新源和更新系统软件
-   apk update && upgrade \
+   # 更新源地址并更新系统软件
+   && apk update && apk upgrade \
+   # 安装依赖包
    apk add --no-cache --clean-protected $PKG_DEPS && \
    rm -rf /var/cache/apk/* && \
    # 更新时区
