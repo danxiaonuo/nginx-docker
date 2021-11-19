@@ -466,7 +466,7 @@ COPY conf/nginx/php.conf /data/nginx/conf/php.conf
 COPY conf/nginx/websocket.conf /data/nginx/conf/websocket.conf
 COPY conf/nginx/waf.conf /data/nginx/conf/waf.conf
 COPY conf/nginx/waf /data/nginx/conf/waf
-COPY conf/nginx/ssl /data/nginx/conf/ssl
+COPY conf/nginx/ssl /ssl
 COPY conf/nginx/vhost /data/nginx/conf/vhost
 COPY www /www
 
