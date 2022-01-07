@@ -456,10 +456,6 @@ RUN set -eux && \
 RUN set -eux && \
     ln -sf /dev/stdout /data/nginx/logs/access.log && \
     ln -sf /dev/stderr /data/nginx/logs/error.log && \
-# 安装dumb-init
-# ##############################################################################
-    wget --no-check-certificate https://github.com/Yelp/dumb-init/releases/download/v${DUMBINIT_VERSION}/dumb-init_${DUMBINIT_VERSION}_x86_64 -O /usr/bin/dumb-init && \
-    chmod +x /usr/bin/dumb-init && \
 # 创建用户和用户组
     addgroup -g 32548 -S nginx && \
     adduser -S -D -H -u 32548 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx && \
