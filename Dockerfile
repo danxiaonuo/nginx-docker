@@ -389,7 +389,7 @@ ARG PKG_DEPS="\
       vim \
       tzdata \
       curl \
-	    wget \
+      wget \
       lsof \
       zip \
       ca-certificates \
