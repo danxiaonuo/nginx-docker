@@ -23,8 +23,8 @@ ipBlocklist={"1.0.0.1"}
 --是否开启拦截cc攻击(需要nginx.conf的http段增加lua_shared_dict limit 10m;)    
 CCDeny="on"
 --设置cc攻击频率，单位为秒.
---默认1分钟同一个IP只能请求同一个地址100次    
-CCrate="100/60"
+--默认1分钟同一个IP只能请求同一个地址1000次    
+CCrate="1000/60"
 html=[[
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
