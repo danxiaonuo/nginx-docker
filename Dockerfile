@@ -51,7 +51,7 @@ ENV NGX_DEVEL_KIT_VERSION=$NGX_DEVEL_KIT_VERSION
 
 # lua-nginx-module
 # https://github.com/openresty/lua-nginx-module
-ARG LUA_NGINX_MODULE_VERSION=0.10.21
+ARG LUA_NGINX_MODULE_VERSION=0.10.20
 ENV LUA_NGINX_MODULE_VERSION=$LUA_NGINX_MODULE_VERSION
 
 # nginx-sticky-module-ng
