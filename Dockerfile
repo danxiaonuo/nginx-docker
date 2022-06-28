@@ -199,7 +199,7 @@ ARG BUILD_DEPS="\
       gzip \
       make \
       openssl-dev \
-      pcre2-dev \
+      pcre-dev \
       tar \
       zlib-dev"
 ENV BUILD_DEPS=$BUILD_DEPS
@@ -219,7 +219,7 @@ ARG NGINX_BUILD_DEPS="\
     make \
     mercurial \
     openssl-dev \
-    pcre2-dev \
+    pcre-dev \
     perl-dev \
     zlib-dev"
 ENV NGINX_BUILD_DEPS=$NGINX_BUILD_DEPS
