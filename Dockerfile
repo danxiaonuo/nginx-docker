@@ -168,6 +168,7 @@ ARG NGINX_BUILD_CONFIG="\
     --with-stream \
     --with-stream=dynamic \
     --with-stream_ssl_module \
+    --with-stream_ssl_preread_module \
     --with-stream_realip_module \
     --with-http_ssl_module \
     --with-http_realip_module \
