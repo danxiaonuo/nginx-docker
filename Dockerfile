@@ -165,6 +165,10 @@ ARG NGINX_BUILD_CONFIG="\
     --add-module=${DOWNLOAD_SRC}/lua-upstream-nginx-module-${LUA_UPSTREAM_VERSION} \
     --user=nginx \
     --group=nginx \
+    --with-stream \
+    --with-stream=dynamic \
+    --with-stream_ssl_module \
+    --with-stream_realip_module \
     --with-http_ssl_module \
     --with-http_realip_module \
     --with-http_addition_module \
