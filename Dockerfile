@@ -35,7 +35,7 @@ ENV DOWNLOAD_SRC=$DOWNLOAD_SRC
 
 # luajit2
 # https://github.com/openresty/luajit2
-ARG LUAJIT_VERSION=2.1-20220915
+ARG LUAJIT_VERSION=2.1-20230119
 ENV LUAJIT_VERSION=$LUAJIT_VERSION
 ARG LUAJIT_LIB=/usr/local/lib
 ENV LUAJIT_LIB=$LUAJIT_LIB
@@ -71,7 +71,7 @@ ENV NGX_LUA_WAF_VERSION=$NGX_LUA_WAF_VERSION
 
 # lua-resty-core
 # https://github.com/openresty/lua-resty-core
-ARG LUA_RESTY_CORE_VERSION=0.1.24
+ARG LUA_RESTY_CORE_VERSION=0.1.26
 ENV LUA_RESTY_CORE_VERSION=$LUA_RESTY_CORE_VERSION
 ARG LUA_LIB_DIR=/usr/local/share/lua/5.1
 ENV LUA_LIB_DIR=$LUA_LIB_DIR
@@ -143,7 +143,7 @@ ENV OPENRESTY_STREAMLUA_VERSION=$OPENRESTY_STREAMLUA_VERSION
 
 # NGINX
 # https://github.com/nginx/nginx
-ARG NGINX_VERSION=1.22.1
+ARG NGINX_VERSION=1.24.0
 ENV NGINX_VERSION=$NGINX_VERSION
 ARG NGINX_BUILD_CONFIG="\
     --prefix=${NGINX_DIR} \
@@ -349,6 +349,7 @@ RUN set -eux && \
 	
 # ***** 安装NGINX *****
 RUN set -eux && \
+    sed -i "s/ngx_http_parse_multi_header_lines.*/ngx_http_parse_multi_header_lines(r, r->headers_in.cookie, \&iphp->sticky_conf->cookie_name, \&route) != NULL) {	/g" nginx-sticky-module-ng-${NGINX_STICKY_MODULE_NG_VERSION}/ngx_http_sticky_module.c && \
     cd ${DOWNLOAD_SRC}/nginx-${NGINX_VERSION} && \
     # sed -i '1,/nginx_version/{s/.*nginx_version.*/#define nginx_version      1010/}' src/core/nginx.h && \
     # sed -i '1,/NGINX_VERSION/{s/.*NGINX_VERSION.*/#define NGINX_VERSION      "1.1"/}' src/core/nginx.h && \
@@ -359,7 +360,7 @@ RUN set -eux && \
     ./configure ${NGINX_BUILD_CONFIG} \
     --add-module=${DOWNLOAD_SRC}/headers-more-nginx-module-${OPENRESTY_HEADERS_VERSION} \
     --add-module=${DOWNLOAD_SRC}/stream-lua-nginx-module-${OPENRESTY_STREAMLUA_VERSION} \
-    # --add-module=${DOWNLOAD_SRC}/nginx-sticky-module-ng-${NGINX_STICKY_MODULE_NG_VERSION} \
+    --add-module=${DOWNLOAD_SRC}/nginx-sticky-module-ng-${NGINX_STICKY_MODULE_NG_VERSION} \
     --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
     --with-ld-opt='-Wl,-rpath,$LUAJIT_LIB -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
     || ./configure ${NGINX_BUILD_CONFIG} \
