@@ -349,7 +349,6 @@ RUN set -eux && \
 	
 # ***** 安装NGINX *****
 RUN set -eux && \
-    sed -i "s/ngx_http_parse_multi_header_lines.*/ngx_http_parse_multi_header_lines(r, r->headers_in.cookie, \&iphp->sticky_conf->cookie_name, \&route) != NULL) {	/g" nginx-sticky-module-ng-${NGINX_STICKY_MODULE_NG_VERSION}/ngx_http_sticky_module.c && \
     cd ${DOWNLOAD_SRC}/nginx-${NGINX_VERSION} && \
     # sed -i '1,/nginx_version/{s/.*nginx_version.*/#define nginx_version      1010/}' src/core/nginx.h && \
     # sed -i '1,/NGINX_VERSION/{s/.*NGINX_VERSION.*/#define NGINX_VERSION      "1.1"/}' src/core/nginx.h && \
@@ -360,7 +359,7 @@ RUN set -eux && \
     ./configure ${NGINX_BUILD_CONFIG} \
     --add-module=${DOWNLOAD_SRC}/headers-more-nginx-module-${OPENRESTY_HEADERS_VERSION} \
     --add-module=${DOWNLOAD_SRC}/stream-lua-nginx-module-${OPENRESTY_STREAMLUA_VERSION} \
-    --add-module=${DOWNLOAD_SRC}/nginx-sticky-module-ng-${NGINX_STICKY_MODULE_NG_VERSION} \
+    # --add-module=${DOWNLOAD_SRC}/nginx-sticky-module-ng-${NGINX_STICKY_MODULE_NG_VERSION} \
     --with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' \
     --with-ld-opt='-Wl,-rpath,$LUAJIT_LIB -Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie' \
     || ./configure ${NGINX_BUILD_CONFIG} \
