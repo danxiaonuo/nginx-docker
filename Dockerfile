@@ -474,8 +474,8 @@ RUN set -eux && \
     ln -sf /dev/stdout /data/nginx/logs/access.log && \
     ln -sf /dev/stderr /data/nginx/logs/error.log && \
 # 创建用户和用户组
-    addgroup --system --quiet nginx && \
-    adduser --quiet --system --disabled-login --ingroup nginx --home /data/nginx --no-create-home nginx && \
+addgroup --system --quiet nginx && \
+adduser --quiet --system --disabled-login --ingroup nginx --home /data/nginx --no-create-home nginx && \
 # smoke test
 # ##############################################################################
     ln -sf ${NGINX_DIR}/sbin/* /usr/sbin/ && \
