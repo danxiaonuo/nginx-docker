@@ -1,7 +1,7 @@
 #############################
 #     设置公共的变量         #
 #############################
-FROM --platform=$BUILDPLATFORM ubuntu:latest AS base
+FROM --platform=$BUILDPLATFORM ubuntu:jammy AS base
 # 作者描述信息
 MAINTAINER danxiaonuo
 # 时区设置
@@ -16,7 +16,7 @@ ARG DOCKER_IMAGE=danxiaonuo/nginx
 ENV DOCKER_IMAGE=$DOCKER_IMAGE
 ARG DOCKER_IMAGE_OS=ubuntu
 ENV DOCKER_IMAGE_OS=$DOCKER_IMAGE_OS
-ARG DOCKER_IMAGE_TAG=latest
+ARG DOCKER_IMAGE_TAG=jammy
 ENV DOCKER_IMAGE_TAG=$DOCKER_IMAGE_TAG
 
 # ##############################################################################
@@ -35,7 +35,7 @@ ENV DOWNLOAD_SRC=$DOWNLOAD_SRC
 
 # luajit2
 # https://github.com/openresty/luajit2
-ARG LUAJIT_VERSION=2.1-20231117
+ARG LUAJIT_VERSION=2.1-20240314
 ENV LUAJIT_VERSION=$LUAJIT_VERSION
 ARG LUAJIT_LIB=/usr/local/lib
 ENV LUAJIT_LIB=$LUAJIT_LIB
@@ -143,7 +143,7 @@ ENV OPENRESTY_STREAMLUA_VERSION=$OPENRESTY_STREAMLUA_VERSION
 
 # NGINX
 # https://github.com/nginx/nginx
-ARG NGINX_VERSION=1.25.4
+ARG NGINX_VERSION=1.26.0
 ENV NGINX_VERSION=$NGINX_VERSION
 ARG NGINX_BUILD_CONFIG="\
     --prefix=${NGINX_DIR} \
@@ -229,7 +229,7 @@ RUN set -eux && \
    # 更新系统软件
    DEBIAN_FRONTEND=noninteractive apt-get update -qqy && apt-get upgrade -qqy && \
    # 安装依赖包
-   DEBIAN_FRONTEND=noninteractive apt-get install -qqy --no-install-recommends $BUILD_DEPS $NGINX_BUILD_DEPS && \
+   DEBIAN_FRONTEND=noninteractive apt-get install -qqy --no-install-recommends $BUILD_DEPS $NGINX_BUILD_DEPS --option=Dpkg::Options::=--force-confdef && \
    DEBIAN_FRONTEND=noninteractive apt-get -qqy --no-install-recommends autoremove --purge && \
    DEBIAN_FRONTEND=noninteractive apt-get -qqy --no-install-recommends autoclean && \
    rm -rf /var/lib/apt/lists/* && \
@@ -435,7 +435,7 @@ RUN set -eux && \
    # 更新系统软件
    DEBIAN_FRONTEND=noninteractive apt-get update -qqy && apt-get upgrade -qqy && \
    # 安装依赖包
-   DEBIAN_FRONTEND=noninteractive apt-get install -qqy --no-install-recommends $PKG_DEPS $NGINX_BUILD_DEPS && \
+   DEBIAN_FRONTEND=noninteractive apt-get install -qqy --no-install-recommends $PKG_DEPS $NGINX_BUILD_DEPS --option=Dpkg::Options::=--force-confdef && \
    DEBIAN_FRONTEND=noninteractive apt-get -qqy --no-install-recommends autoremove --purge && \
    DEBIAN_FRONTEND=noninteractive apt-get -qqy --no-install-recommends autoclean && \
    rm -rf /var/lib/apt/lists/* && \
