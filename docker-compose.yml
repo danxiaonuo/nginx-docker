@@ -57,9 +57,9 @@ services:
     #  - ""
     # 配置容器连接的网络
     networks:
-      app_net:
-        ipv4_address: 172.186.0.2
-        ipv6_address: 2066::2
+      nginx:
+        ipv4_address: 172.20.0.2
+        ipv6_address: fd99::2
     # 暴露端口信息
     ports:
     - "80:80"
@@ -73,11 +73,11 @@ services:
  
  
 networks:
-  app_net:
+  nginx:
     driver: bridge
     enable_ipv6: true
     driver_opts:
-      com.docker.network.bridge.name: app_net
+      com.docker.network.bridge.name: nginx
       com.docker.network.bridge.enable_icc: "true"
       com.docker.network.bridge.enable_ip_forwarding: "true"
       com.docker.network.bridge.enable_ip_masquerade: "true"
@@ -87,7 +87,7 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 172.186.0.0/24
-        gateway: 172.186.0.1
-      - subnet: 2066::/64
-        gateway: 2066::1
+      - subnet: 172.20.0.0/24
+        gateway: 172.20.0.1
+      - subnet: fd99::/64
+        gateway: fd99::1
